@@ -28,6 +28,7 @@ func urlmap() map[string]string {
 		"rds":     "REGION.console.aws.amazon.com/rds/home?region=REGION",
 		"vpc":     "REGION.console.aws.amazon.com/vpc/home?region=REGION",
 		"route53": "console.aws.amazon.com/route53/home?region=REGION",
+		"s3":      "console.aws.amazon.com/s3/home?region=REGION",
 	}
 }
 
