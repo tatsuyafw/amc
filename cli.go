@@ -79,7 +79,7 @@ func (cli *CLI) parseOptions(args []string) (*Options, []string, error) {
 
 func (CLI) version() []byte {
 	buf := bytes.Buffer{}
-	fmt.Fprintln(&buf, "silver-cornival version "+Version)
+	fmt.Fprintln(&buf, "amc version "+Version)
 	return buf.Bytes()
 }
 
@@ -87,7 +87,7 @@ func (cli *CLI) help() []byte {
 	buf := bytes.Buffer{}
 
 	fmt.Fprintf(&buf, `
-Usage: silver-carnival [options] AWS_SERVICE
+Usage: amc [options] AWS_SERVICE
 
 AWS_SERVICE:
 `)
