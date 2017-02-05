@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os/exec"
+	"strings"
 
 	flags "github.com/jessevdk/go-flags"
 )
@@ -82,13 +83,17 @@ func (CLI) version() []byte {
 	return buf.Bytes()
 }
 
-func (CLI) help() []byte {
+func (cli *CLI) help() []byte {
 	buf := bytes.Buffer{}
 
 	fmt.Fprintf(&buf, `
 Usage: silver-carnival [options] AWS_SERVICE
 
-AWS_SERVICE: ec2
+AWS_SERVICE:
 `)
+
+	s := strings.Join(cli.aws.supported(), ",")
+	fmt.Fprintln(&buf, "  "+s)
+
 	return buf.Bytes()
 }
