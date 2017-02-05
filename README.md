@@ -1,6 +1,6 @@
 # amc
 
-CLI tool to open Amazon Management Console with your browser.
+CLI tool to open AWS Management Console with your browser.
 
 ## Usage
 
