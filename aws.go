@@ -25,6 +25,7 @@ func (*AWS) Validate(service string) bool {
 func urlmap() map[string]string {
 	return map[string]string{
 		"ec2": "REGION.console.aws.amazon.com/ec2/v2/home?REGION&region=REGION",
+		"rds": "REGION.console.aws.amazon.com/rds/home?region=REGION",
 	}
 }
 
