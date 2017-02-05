@@ -35,7 +35,7 @@ func urlmap() map[string]string {
 	}
 }
 
-func supported() []string {
+func (*AWS) supported() []string {
 	m := urlmap()
 	s := []string{}
 	for k, _ := range m {
