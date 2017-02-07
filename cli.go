@@ -60,7 +60,7 @@ func (cli *CLI) Run(args []string) int {
 
 func (cli *CLI) open(service string) {
 	a := AWS{}
-	u := a.Url(service)
+	u := a.URL(service)
 	fmt.Println(u)
 	// TODO: handling an error
 	exec.Command("open", u).Run()
