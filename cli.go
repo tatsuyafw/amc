@@ -14,7 +14,6 @@ const (
 	exitCodeOK = iota
 	exitCodeParserFlagError
 	exitCodeArgumentError
-	exitCodeUnsupportedError
 )
 
 type cli struct {
@@ -57,12 +56,12 @@ func (c *cli) Run(args []string) int {
 		service = parsed[0]
 	}
 
-	a := AWS{}
-	if !a.Validate(service) {
-		// TODO: display error message
-		return exitCodeUnsupportedError
+	a, err := newAWS(service)
+	if err != nil {
+		c.showHelp() // TODO: show more details about an error.
+		return exitCodeArgumentError
 	}
-	u := a.URL(service)
+	u := a.URL()
 	c.open(u)
 
 	return exitCodeOK

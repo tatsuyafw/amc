@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strings"
 )
@@ -9,19 +10,30 @@ import (
 const DefaultRegion = "us-east-1"
 
 // An AWS represents amazon web services.
-type AWS struct{}
+type AWS struct {
+	service string
+}
+
+func newAWS(s string) (*AWS, error) {
+	a := &AWS{service: s}
+	if !a.validate() {
+		return nil, fmt.Errorf("error: %v is invalid service", s)
+	}
+	return a, nil
+}
 
 // URL returns the AWS management console service URL.
-func (*AWS) URL(s string) string {
+func (a *AWS) URL() string {
 	m := urlmap()
 	r := region()
+	s := a.service
 	return "https://" + strings.Replace(m[s], "REGION", r, -1)
 }
 
 // Validate checks whether the given service is valid.
-func (*AWS) Validate(service string) bool {
+func (a *AWS) validate() bool {
 	m := urlmap()
-	_, ok := m[service]
+	_, ok := m[a.service]
 	return ok
 }
 
