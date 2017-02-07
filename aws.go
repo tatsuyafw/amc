@@ -5,17 +5,20 @@ import (
 	"strings"
 )
 
-const DEFAULT_REGION = "us-east-1"
+// DefaultRegion is used when AWS_REGION env variable is not set.
+const DefaultRegion = "us-east-1"
 
+// An AWS represents amazon web services.
 type AWS struct{}
 
-func (*AWS) Url(s string) string {
+// URL returns the AWS management console service URL.
+func (*AWS) URL(s string) string {
 	m := urlmap()
 	r := region()
 	return "https://" + strings.Replace(m[s], "REGION", r, -1)
 }
 
-// TODO: return with err
+// Validate checks whether the given service is valid.
 func (*AWS) Validate(service string) bool {
 	m := urlmap()
 	_, ok := m[service]
@@ -38,7 +41,7 @@ func urlmap() map[string]string {
 func (*AWS) supported() []string {
 	m := urlmap()
 	s := []string{}
-	for k, _ := range m {
+	for k := range m {
 		s = append(s, k)
 	}
 	return s
@@ -47,7 +50,7 @@ func (*AWS) supported() []string {
 func region() string {
 	r := os.Getenv("AWS_REGION")
 	if r == "" {
-		r = DEFAULT_REGION
+		r = DefaultRegion
 	}
 	return r
 }

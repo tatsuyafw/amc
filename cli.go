@@ -11,79 +11,79 @@ import (
 )
 
 const (
-	ExitCodeOK = iota
-	ExitCodeParserFlagError
-	ExitCodeUnsupportedError
+	exitCodeOK = iota
+	exitCodeParserFlagError
+	exitCodeUnsupportedError
 )
 
-type CLI struct {
+type cli struct {
 	outStream, errStream io.Writer
 	aws                  AWS
 }
 
-type Options struct {
-	OptHelp    bool `short:"h" long:"help" description:"Show this help message and exit"`
-	OptVersion bool `short:"v" long:"version" description:"Print the version and exit"`
+type options struct {
+	optHelp    bool `short:"h" long:"help" description:"Show this help message and exit"`
+	optVersion bool `short:"v" long:"version" description:"Print the version and exit"`
 }
 
-func NewCLI(o io.Writer, e io.Writer) *CLI {
-	return &CLI{outStream: o, errStream: e, aws: AWS{}}
+func newCli(o io.Writer, e io.Writer) *cli {
+	return &cli{outStream: o, errStream: e, aws: AWS{}}
 }
 
-func (cli *CLI) Run(args []string) int {
-	opts, parsed, err := cli.parseOptions(args)
+func (c *cli) Run(args []string) int {
+	opts, parsed, err := c.parseoptions(args)
 	if err != nil {
-		return ExitCodeParserFlagError
+		return exitCodeParserFlagError
 	}
 
-	if opts.OptHelp {
-		cli.outStream.Write(cli.help())
-		return ExitCodeOK
+	if opts.optHelp {
+		c.outStream.Write(c.help())
+		return exitCodeOK
 	}
 
-	if opts.OptVersion {
-		cli.outStream.Write(cli.version())
-		return ExitCodeOK
+	if opts.optVersion {
+		c.outStream.Write(c.version())
+		return exitCodeOK
 	}
 
 	if len(parsed) == 1 {
 		s := parsed[0]
-		if !cli.aws.Validate(s) {
+		if !c.aws.Validate(s) {
 			// TODO: display error message
-			return ExitCodeUnsupportedError
+			return exitCodeUnsupportedError
 		}
-		cli.open(s)
+		c.open(s)
 	}
 
-	return ExitCodeOK
+	return exitCodeOK
 }
 
-func (cli *CLI) open(service string) {
+func (c *cli) open(service string) {
 	a := AWS{}
-	u := a.Url(service)
+	u := a.URL(service)
 	fmt.Println(u)
 	// TODO: handling an error
 	exec.Command("open", u).Run()
 }
 
-func (cli *CLI) parseOptions(args []string) (*Options, []string, error) {
-	opts := &Options{}
+func (c *cli) parseoptions(args []string) (*options, []string, error) {
+	opts := &options{}
 	p := flags.NewParser(opts, flags.PrintErrors)
 	args, err := p.ParseArgs(args)
 	if err != nil {
-		cli.errStream.Write(cli.help())
+		c.errStream.Write(c.help())
 		return nil, nil, err
 	}
 	return opts, args, nil
 }
 
-func (CLI) version() []byte {
+func (cli) version() []byte {
 	buf := bytes.Buffer{}
-	fmt.Fprintln(&buf, "amc version "+Version)
+	fmt.Fprintln(&buf, "amc version "+version)
 	return buf.Bytes()
 }
 
-func (cli *CLI) help() []byte {
+func (c *cli) help() []byte {
 	buf := bytes.Buffer{}
 
 	fmt.Fprintf(&buf, `
@@ -92,7 +92,7 @@ Usage: amc [options] AWS_SERVICE
 AWS_SERVICE:
 `)
 
-	s := strings.Join(cli.aws.supported(), ",")
+	s := strings.Join(c.aws.supported(), ",")
 	fmt.Fprintln(&buf, "  "+s)
 
 	return buf.Bytes()
