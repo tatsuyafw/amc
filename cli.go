@@ -8,17 +8,17 @@ import (
 	"strings"
 
 	flags "github.com/jessevdk/go-flags"
+	"github.com/tatsuyafw/amc/aws"
 )
 
 const (
 	exitCodeOK = iota
 	exitCodeParserFlagError
-	exitCodeUnsupportedError
+	exitCodeArgumentError
 )
 
 type cli struct {
 	outStream, errStream io.Writer
-	aws                  AWS
 }
 
 type options struct {
@@ -27,7 +27,7 @@ type options struct {
 }
 
 func newCli(o io.Writer, e io.Writer) *cli {
-	return &cli{outStream: o, errStream: e, aws: AWS{}}
+	return &cli{outStream: o, errStream: e}
 }
 
 func (c *cli) Run(args []string) int {
@@ -46,24 +46,35 @@ func (c *cli) Run(args []string) int {
 		return exitCodeOK
 	}
 
-	if len(parsed) == 1 {
-		s := parsed[0]
-		if !c.aws.Validate(s) {
-			// TODO: display error message
-			return exitCodeUnsupportedError
-		}
-		c.open(s)
+	if len(parsed) == 0 {
+		c.showHelp()
+		return exitCodeArgumentError
 	}
+
+	var service string
+	var query string
+	if len(parsed) > 0 {
+		service = parsed[0]
+	}
+	if len(parsed) > 1 {
+		query = parsed[1]
+	}
+
+	a, err := aws.New(service, query)
+	if err != nil {
+		c.showHelp() // TODO: show more details about an error.
+		return exitCodeArgumentError
+	}
+	u := a.URL()
+	c.open(u)
 
 	return exitCodeOK
 }
 
-func (c *cli) open(service string) {
-	a := AWS{}
-	u := a.URL(service)
-	fmt.Println(u)
+func (c *cli) open(url string) {
+	fmt.Println(url)
 	// TODO: handling an error
-	exec.Command("open", u).Run()
+	exec.Command("open", url).Run()
 }
 
 func (c *cli) parseoptions(args []string) (*options, []string, error) {
@@ -83,6 +94,10 @@ func (cli) version() []byte {
 	return buf.Bytes()
 }
 
+func (c *cli) showHelp() {
+	c.outStream.Write(c.help())
+}
+
 func (c *cli) help() []byte {
 	buf := bytes.Buffer{}
 
@@ -92,7 +107,8 @@ Usage: amc [options] AWS_SERVICE
 AWS_SERVICE:
 `)
 
-	s := strings.Join(c.aws.supported(), ",")
+	a := aws.Supported()
+	s := strings.Join(a, ",")
 	fmt.Fprintln(&buf, "  "+s)
 
 	return buf.Bytes()
