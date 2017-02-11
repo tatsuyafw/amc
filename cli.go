@@ -52,11 +52,15 @@ func (c *cli) Run(args []string) int {
 	}
 
 	var service string
-	if len(parsed) == 1 {
+	var query string
+	if len(parsed) > 0 {
 		service = parsed[0]
 	}
+	if len(parsed) > 1 {
+		query = parsed[1]
+	}
 
-	a, err := aws.New(service)
+	a, err := aws.New(service, query)
 	if err != nil {
 		c.showHelp() // TODO: show more details about an error.
 		return exitCodeArgumentError
