@@ -39,6 +39,7 @@ func (a *AWS) validate() bool {
 
 func urlmap() map[string]string {
 	return map[string]string{
+		"cloudwatch":  "REGION.console.aws.amazon.com/cloudwatch/home?region=REGION",
 		"ec2":         "REGION.console.aws.amazon.com/ec2/v2/home?REGION&region=REGION",
 		"ecs":         "REGION.console.aws.amazon.com/ecs/home?region=REGION",
 		"elasticache": "REGION.console.aws.amazon.com/elasticache/home?region=REGION",
