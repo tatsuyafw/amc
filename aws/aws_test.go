@@ -1,4 +1,4 @@
-package main
+package aws
 
 import (
 	"os"
@@ -9,7 +9,7 @@ func TestURL(t *testing.T) {
 	reset := setTestEnv("AWS_REGION", "ap-northeast-1")
 	defer reset()
 
-	a, _ := newAWS("ec2")
+	a, _ := New("ec2")
 	actual := a.URL()
 	expected := "https://ap-northeast-1.console.aws.amazon.com/ec2/v2/home?ap-northeast-1&region=ap-northeast-1"
 

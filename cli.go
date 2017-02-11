@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	flags "github.com/jessevdk/go-flags"
+	"github.com/tatsuyafw/amc/aws"
 )
 
 const (
@@ -51,12 +52,11 @@ func (c *cli) Run(args []string) int {
 	}
 
 	var service string
-
 	if len(parsed) == 1 {
 		service = parsed[0]
 	}
 
-	a, err := newAWS(service)
+	a, err := aws.New(service)
 	if err != nil {
 		c.showHelp() // TODO: show more details about an error.
 		return exitCodeArgumentError
@@ -103,8 +103,8 @@ Usage: amc [options] AWS_SERVICE
 AWS_SERVICE:
 `)
 
-	a := AWS{}
-	s := strings.Join(a.supported(), ",")
+	a := aws.Supported()
+	s := strings.Join(a, ",")
 	fmt.Fprintln(&buf, "  "+s)
 
 	return buf.Bytes()
