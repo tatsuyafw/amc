@@ -22,6 +22,7 @@ type cli struct {
 }
 
 type options struct {
+	OptDryRun  bool `short:"d" long:"dry-run" description:"Perform a dry-run"`
 	OptHelp    bool `short:"h" long:"help" description:"Show this help message and exit"`
 	OptVersion bool `short:"v" long:"version" description:"Print the version and exit"`
 }
@@ -31,7 +32,7 @@ func newCli(o io.Writer, e io.Writer) *cli {
 }
 
 func (c *cli) Run(args []string) int {
-	opts, parsed, err := c.parseoptions(args)
+	opts, parsed, err := c.parseOptions(args)
 	if err != nil {
 		return exitCodeParserFlagError
 	}
@@ -66,18 +67,20 @@ func (c *cli) Run(args []string) int {
 		return exitCodeArgumentError
 	}
 	u := a.URL()
-	c.open(u)
+	fmt.Println(u)
+	if !opts.OptDryRun {
+		c.open(u)
+	}
 
 	return exitCodeOK
 }
 
 func (c *cli) open(url string) {
-	fmt.Println(url)
 	// TODO: handling an error
 	exec.Command("open", url).Run()
 }
 
-func (c *cli) parseoptions(args []string) (*options, []string, error) {
+func (c *cli) parseOptions(args []string) (*options, []string, error) {
 	opts := &options{}
 	p := flags.NewParser(opts, flags.PrintErrors)
 	args, err := p.ParseArgs(args)
