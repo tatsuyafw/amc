@@ -22,8 +22,8 @@ type cli struct {
 }
 
 type options struct {
-	optHelp    bool `short:"h" long:"help" description:"Show this help message and exit"`
-	optVersion bool `short:"v" long:"version" description:"Print the version and exit"`
+	OptHelp    bool `short:"h" long:"help" description:"Show this help message and exit"`
+	OptVersion bool `short:"v" long:"version" description:"Print the version and exit"`
 }
 
 func newCli(o io.Writer, e io.Writer) *cli {
@@ -36,12 +36,12 @@ func (c *cli) Run(args []string) int {
 		return exitCodeParserFlagError
 	}
 
-	if opts.optHelp {
+	if opts.OptHelp {
 		c.outStream.Write(c.help())
 		return exitCodeOK
 	}
 
-	if opts.optVersion {
+	if opts.OptVersion {
 		c.outStream.Write(c.version())
 		return exitCodeOK
 	}
