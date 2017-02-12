@@ -1,0 +1,16 @@
+#compdef amc
+
+_amc() {
+  _values \
+    "cloudwatch" \
+    "ec2" \
+    "ecs" \
+    "elasticache" \
+    "elb" \
+    "iam" \
+    "rds" \
+    "route53" \
+    "s3" \
+    "vpc" \
+}
+
