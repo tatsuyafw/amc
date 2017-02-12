@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os/exec"
+	"reflect"
 	"strings"
 
 	flags "github.com/jessevdk/go-flags"
@@ -97,6 +98,21 @@ func (cli) version() []byte {
 	return buf.Bytes()
 }
 
+func optionMessages() []string {
+	o := options{}
+	t := reflect.TypeOf(o)
+	messages := make([]string, 0, t.NumField())
+	for i := 0; i < t.NumField(); i++ {
+		f := t.Field(i)
+		s := f.Tag.Get("short")
+		l := f.Tag.Get("long")
+		d := f.Tag.Get("description")
+		m := "-" + s + ", --" + l + ":\t" + d
+		messages = append(messages, m)
+	}
+	return messages
+}
+
 func (c *cli) showHelp() {
 	c.outStream.Write(c.help())
 }
@@ -113,6 +129,14 @@ AWS_SERVICE:
 	a := aws.Supported()
 	s := strings.Join(a, ",")
 	fmt.Fprintln(&buf, "  "+s)
+
+	fmt.Fprintf(&buf, `
+Options:
+`)
+
+	for _, m := range optionMessages() {
+		fmt.Fprintln(&buf, "\t"+m)
+	}
 
 	return buf.Bytes()
 }
