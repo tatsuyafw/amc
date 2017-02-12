@@ -31,6 +31,8 @@ func New(service, query string) (AWS, error) {
 		a = &ecs{query}
 	case "elasticache":
 		a = &elasticache{query}
+	case "elb":
+		a = &elb{query}
 	case "iam":
 		a = &iam{query}
 	case "rds":
@@ -57,6 +59,7 @@ func Supported() []string {
 		"ec2",
 		"ecs",
 		"elasticache",
+		"elb",
 		"iam",
 		"rds",
 		"route53",
