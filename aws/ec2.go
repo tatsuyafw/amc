@@ -7,7 +7,16 @@ type ec2 struct {
 }
 
 var queries = map[string]string{
-	"instances": "Instances",
+	"addresses":       "Addresses",
+	"events":          "Events",
+	"images":          "Images",
+	"instances":       "Instances",
+	"limits":          "Limits",
+	"reports":         "Reports",
+	"security-groups": "SecurityGroups",
+	"snapshots":       "Snapshots",
+	"tags":            "Tags",
+	"volumes":         "Volumes",
 }
 
 func (a ec2) URL() string {
