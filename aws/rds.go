@@ -7,6 +7,9 @@ type rds struct {
 }
 
 var rdsQueries = map[string]string{
+	"instances":        "dbinstances:",
+	"clusters":         "dbclusters:",
+	"snapshots":        "db-snapshots:",
 	"parameter-groups": "parameter-groups:",
 }
 
