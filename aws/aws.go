@@ -25,6 +25,8 @@ func New(service, query string) (AWS, error) {
 	switch service {
 	case "cloudwatch":
 		a = &cloudwatch{query}
+	case "dynamodb":
+		a = &dynamodb{query}
 	case "ec2":
 		a = &ec2{query}
 	case "ecs":
@@ -56,6 +58,7 @@ func New(service, query string) (AWS, error) {
 func Supported() []string {
 	return []string{
 		"cloudwatch",
+		"dynamodb",
 		"ec2",
 		"ecs",
 		"elasticache",
